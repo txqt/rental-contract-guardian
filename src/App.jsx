@@ -317,9 +317,29 @@ function App() {
                 <Typography variant="subtitle2" fontWeight={700} gutterBottom>
                   {language === 'vi' ? '⚖️ Đối chiếu pháp luật' : '⚖️ Legal Comparison'}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" color="text.secondary" paragraph>
                   {analysis.legal_comparison}
                 </Typography>
+
+                {analysis.legal_references && analysis.legal_references.length > 0 && (
+                  <Box display="flex" gap={1} flexWrap="wrap" mt={2}>
+                    {analysis.legal_references.map((ref, idx) => (
+                      <Chip
+                        key={idx}
+                        label={ref.text}
+                        component="a"
+                        href={ref.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        clickable
+                        size="small"
+                        color="info"
+                        variant="outlined"
+                        sx={{ cursor: 'pointer' }}
+                      />
+                    ))}
+                  </Box>
+                )}
               </Paper>
             </Box>
           )}
