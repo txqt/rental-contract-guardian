@@ -21,14 +21,16 @@ function App() {
   const [model, setModel] = useState('gemini-2.5-flash');
   const [contractContext, setContractContext] = useState('');
 
-  const handleLanguageChange = (event, newLanguage) => {
-    if (newLanguage !== null) {
-      setLanguage(newLanguage);
-    }
+  const handleLanguageChange = (event) => {
+    setLanguage(event.target.value);
   };
 
   const handleFileChange = async (e) => {
     const selectedFile = e.target.files[0];
+
+    // Clear input value so same file can be selected again if needed
+    e.target.value = '';
+
     setFile(selectedFile);
     setAnalysis('');
     setError('');
@@ -57,6 +59,8 @@ function App() {
         setError(language === 'vi'
           ? 'Không thể phân tích hợp đồng. Vui lòng kiểm tra file hoặc thử lại.'
           : 'Failed to analyze contract. Please check file or try again.');
+        // Reset file if analysis failed so user can try again
+        setFile(null);
       } finally {
         setLoading(false);
       }
@@ -86,11 +90,18 @@ function App() {
             <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 700, color: 'primary.main' }}>
               {language === 'vi' ? '🏠 Trợ Lý Hợp Đồng Thuê Nhà' : '🏠 Rental Contract Guardian'}
             </Typography>
-            <Typography variant="body1" color="text.secondary">
+            <Typography variant="body1" color="text.secondary" gutterBottom>
               {language === 'vi'
                 ? 'Phân tích hợp đồng thông minh với AI'
                 : 'Smart contract analysis powered by AI'}
             </Typography>
+            <Chip
+              label={language === 'vi' ? '🇻🇳 Đang hỗ trợ tốt nhất cho Hợp đồng Việt Nam' : '🇻🇳 Optimized for Vietnamese Contracts'}
+              color="success"
+              variant="outlined"
+              size="small"
+              sx={{ mt: 1, fontWeight: 500 }}
+            />
           </Box>
 
           {/* Settings Section */}
@@ -98,23 +109,19 @@ function App() {
             <Stack spacing={3}>
               <Box display="flex" gap={2} flexWrap="wrap" alignItems="center">
                 {/* Language Toggle */}
-                <Box>
+                <Box sx={{ minWidth: 150 }}>
                   <Typography variant="caption" display="block" sx={{ mb: 1, fontWeight: 600 }}>
                     {language === 'vi' ? 'Ngôn ngữ' : 'Language'}
                   </Typography>
-                  <ToggleButtonGroup
-                    value={language}
-                    exclusive
-                    onChange={handleLanguageChange}
-                    size="small"
-                  >
-                    <ToggleButton value="vi">
-                      🇻🇳 Tiếng Việt
-                    </ToggleButton>
-                    <ToggleButton value="en">
-                      🇬🇧 English
-                    </ToggleButton>
-                  </ToggleButtonGroup>
+                  <FormControl fullWidth size="small">
+                    <Select
+                      value={language}
+                      onChange={handleLanguageChange}
+                    >
+                      <MenuItem value="vi">🇻🇳 Tiếng Việt</MenuItem>
+                      <MenuItem value="en">🇬🇧 English</MenuItem>
+                    </Select>
+                  </FormControl>
                 </Box>
 
                 {/* Model Selection */}
